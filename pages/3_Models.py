@@ -9,7 +9,8 @@ import numpy as np
 st.set_page_config(
     page_title="แดชบอร์ดการคาดการณ์",
     layout="wide",
-    initial_sidebar_state="expanded")
+    initial_sidebar_state="expanded"
+)
 
 st.title("แดชบอร์ดการคาดการณ์ข้อมูล")
 
@@ -19,9 +20,9 @@ def load_data():
     # Load the dataset (update the path if necessary)
     df = pd.read_csv("Datasets/Main_Dashboard/Modified/DDC/report/report.csv")
     
-    # Convert year and weeknum to datetime if needed
+    # Convert year and weeknum to datetime
     df['date'] = df.apply(lambda row: pd.to_datetime(f"{row['year']}-{row['weeknum']}-1", format="%Y-%W-%w"), axis=1)
-    df = df[['year', 'weeknum', 'new_case', 'total_case', 'new_case_excludeabroad',
+    df = df[['date', 'year', 'weeknum', 'new_case', 'total_case', 'new_case_excludeabroad',
              'total_case_excludeabroad', 'new_recovered', 'total_recovered', 
              'new_death', 'total_death', 'case_foreign', 'case_prison', 'case_walkin']]
     return df
@@ -38,7 +39,7 @@ model_choice = st.sidebar.selectbox("เลือกโมเดลสำหร�
 test_size = st.sidebar.slider("เลือกขนาดชุดข้อมูลทดสอบ (%)", 10, 50, 20)
 
 # Prepare data for modeling
-X = df.drop(columns=[target])
+X = df.drop(columns=[target, 'date'])  # Exclude the 'date' column for modeling
 y = df[target]
 
 # Split data into training and testing sets
@@ -72,6 +73,28 @@ results_df = pd.DataFrame({"ค่าจริง": y_test, "ค่าที่�
 st.write("## ผลลัพธ์การคาดการณ์")
 st.write(results_df.head(20))
 
-# Optional: Plot actual vs. predicted values
-st.subheader("ค่าจริงเทียบกับค่าที่คาดการณ์")
-st.line_chart(results_df.reset_index(drop=True))
+# Simulate future data based on report.csv
+st.subheader("การจำลองข้อมูลในอนาคต")
+days_to_simulate = st.slider("เลือกจำนวนวันในการจำลอง", 1, 60, 30)
+if st.button("จำลองข้อมูลในอนาคต"):
+    # Generate future dates
+    future_dates = pd.date_range(df['date'].max(), periods=days_to_simulate + 1)[1:]
+    
+    # Simulate future data
+    last_row = df.iloc[-1]
+    future_data = []
+    for date in future_dates:
+        simulated_row = last_row.copy()
+        simulated_row['date'] = date
+        # Add some random noise to numeric columns to simulate future values
+        for col in ['new_case', 'total_case', 'new_case_excludeabroad', 'total_case_excludeabroad',
+                    'new_recovered', 'total_recovered', 'new_death', 'total_death',
+                    'case_foreign', 'case_prison', 'case_walkin']:
+            simulated_row[col] += np.random.randint(-10, 10)  # Adjust the range as needed for realism
+            simulated_row[col] = max(0, simulated_row[col])  # Ensure no negative values
+        future_data.append(simulated_row)
+    
+    future_df = pd.DataFrame(future_data)
+    st.write("## ข้อมูลที่จำลองในอนาคต")
+    st.write(future_df)
+    st.line_chart(future_df.set_index("date")[[target]])
