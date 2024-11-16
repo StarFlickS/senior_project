@@ -32,8 +32,8 @@ df = load_data()
 
 # Sidebar - Model selection
 st.sidebar.header("การเลือกโมเดล")
-target = st.sidebar.selectbox("เลือกเป้าหมายที่จะทำนาย", ("new_death", "total_death"))
-model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วยป่าไม้สุ่ม (Random Forest)"))
+target = st.sidebar.selectbox("เลือกเป้าหมายที่จะทำนาย", ("new_case", "new_death"))
+model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วย Random Forest"))
 
 # Sidebar - Train/test split
 test_size = st.sidebar.slider("เลือกขนาดชุดข้อมูลทดสอบ (%)", 10, 50, 20)
@@ -48,7 +48,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size / 
 # Model training and prediction
 if model_choice == "การถดถอยเชิงเส้น (Linear Regression)":
     model = LinearRegression()
-elif model_choice == "การคาดการณ์ด้วยป่าไม้สุ่ม (Random Forest)":
+elif model_choice == "การคาดการณ์ด้วย Random Forest":
     model = RandomForestRegressor(n_estimators=100, random_state=42)
 
 model.fit(X_train, y_train)
@@ -60,13 +60,40 @@ mse = mean_squared_error(y_test, predictions)
 rmse = np.sqrt(mse)
 r2 = r2_score(y_test, predictions)
 
-# Display results
+# Display results with additional performance interpretations
 st.subheader(f"ผลลัพธ์ของโมเดล {model_choice}")
 st.write(f"**ตัวแปรเป้าหมาย**: {target}")
 st.write(f"**ค่าเฉลี่ยของข้อผิดพลาดแบบสัมบูรณ์ (MAE)**: {mae:.2f}")
+if mae < 10:
+    st.write("ข้อผิดพลาดเฉลี่ยต่ำ แสดงว่าโมเดลมีความแม่นยำในการทำนาย")
+elif mae < 20:
+    st.write("ข้อผิดพลาดเฉลี่ยปานกลาง โมเดลอาจต้องการการปรับปรุงเพิ่มเติม")
+else:
+    st.write("ข้อผิดพลาดเฉลี่ยสูง โมเดลอาจไม่เหมาะสมกับข้อมูล")
+
 st.write(f"**ค่าเฉลี่ยของข้อผิดพลาดแบบยกกำลังสอง (MSE)**: {mse:.2f}")
+if mse < 100:
+    st.write("ค่า MSE ต่ำ แสดงว่าโมเดลมีข้อผิดพลาดรวมน้อย")
+elif mse < 500:
+    st.write("ค่า MSE ปานกลาง ข้อผิดพลาดยังค่อนข้างน้อย")
+else:
+    st.write("ค่า MSE สูง โมเดลอาจไม่แม่นยำ")
+
 st.write(f"**ค่ารากที่สองของค่าเฉลี่ยข้อผิดพลาด (RMSE)**: {rmse:.2f}")
-st.write(f"**ค่าอธิบายสัดส่วนการกระจายของข้อมูล (R2)**: {r2:.2f}")
+if rmse < 10:
+    st.write("ค่า RMSE ต่ำ แสดงว่าโมเดลมีความแม่นยำสูง")
+elif rmse < 20:
+    st.write("ค่า RMSE ปานกลาง อาจต้องปรับปรุงโมเดล")
+else:
+    st.write("ค่า RMSE สูง โมเดลอาจมีข้อผิดพลาดที่สำคัญ")
+
+st.write(f"**ค่าอธิบายสัดส่วนการกระจายของข้อมูล (R²)**: {r2:.2f}")
+if r2 > 0.8:
+    st.write("มีความแม่นยำสูง โมเดลอธิบายข้อมูลได้ดี")
+elif r2 > 0.5:
+    st.write("มีความแม่นยำปานกลาง โมเดลอธิบายข้อมูลได้พอสมควร")
+else:
+    st.write("มีความแม่นยำน้อย โมเดลอาจต้องการการปรับปรุง")
 
 # Show prediction results as a DataFrame
 results_df = pd.DataFrame({"ค่าจริง": y_test, "ค่าที่คาดการณ์": predictions})

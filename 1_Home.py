@@ -53,7 +53,7 @@ with col1_row1:
     )
     
     container.plotly_chart(fig)
-    container.write("ข้อมูลจาก owid")
+    container.write("ข้อมูลจาก owid (https://ourworldindata.org)")
 
 with col2_row1:
     container = st.container(border=True)
@@ -95,7 +95,7 @@ with col2_row1:
     container.subheader("จำนวนผู้เสียชีวิตในประเทศไทย")
     container.metric("จำนวนผู้เสียชีวิต", f"{total_deaths:,} ราย")
     container.plotly_chart(fig_pie)
-    container.write("ข้อมูลจาก DDC")
+    container.write("ข้อมูลจาก กรมควบคุมโรค (https://covid19.ddc.moph.go.th)")
 
 with col3_row1:
     container = st.container(border=True)
@@ -115,7 +115,7 @@ with col3_row1:
     )
 
     container.plotly_chart(fig)
-    container.write("ข้อมูลจาก DDC")
+    container.write("ข้อมูลจาก กรมควบคุมโรค")
 
 with col1_row2:
     container = st.container(border=True)
@@ -126,7 +126,7 @@ with col1_row2:
                  labels={'age_range': 'ช่วงอายุ', 'death_count': 'จำนวนผู้เสียชีวิต'})
 
     container.plotly_chart(fig)
-    container.write("ข้อมูลจาก DDC")
+    container.write("ข้อมูลจาก กรมควบคุมโรค (https://covid19.ddc.moph.go.th)")
 
 with col2_row2:
     container = st.container(border=True)
@@ -137,15 +137,15 @@ with col2_row2:
                  labels={'age_range': 'ช่วงอายุ', 'count': 'จำนวนผู้ติดเชื้อ'})
 
     container.plotly_chart(fig)
-    container.write("ข้อมูลจาก DDC")
+    container.write("ข้อมูลจาก กรมควบคุมโรค (https://covid19.ddc.moph.go.th)")
 
 with col3_row2:
     container = st.container(border=True)
-    container.subheader("Placeholder 5")
+    container.subheader("จำนวนผู้ที่ได้รับวัคซีนในประเทศไทย")
     container.metric("จำนวนผู้ที่ฉีดวัคซีน", f"{total_vac:,} ราย")  
 
     fig = px.line(owid_df_weekly, x='date', y='new_vaccinations', title='จำนวนผู้ติดเชื้อในแต่ละปี')
 
     container.plotly_chart(fig)
 
-    container.write("ข้อมูลจาก owid")
+    container.write("ข้อมูลจาก owid (https://ourworldindata.org)")
