@@ -115,7 +115,7 @@ with col3_row1:
     )
 
     container.plotly_chart(fig)
-    container.write("ข้อมูลจาก กรมควบคุมโรค")
+    container.write("ข้อมูลจาก กรมควบคุมโรค (https://covid19.ddc.moph.go.th)")
 
 with col1_row2:
     container = st.container(border=True)
