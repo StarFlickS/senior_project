@@ -135,6 +135,7 @@ cases_translation = {
 # Selecting attributes and updating the dataset name and columns
 if dataset == "owid_Thailand.csv":
     selected_df = owid_df
+    x_options = ["date"]
     columns = list(owid_translation.keys())
     translated_columns = [owid_translation[col] for col in columns]
     min_date = owid_df['date'].min().date()
@@ -142,6 +143,7 @@ if dataset == "owid_Thailand.csv":
     dataset_name = "owid_Thailand.csv"
 elif dataset == "deaths_merged.csv":
     selected_df = death_df
+    x_options = ["date", "age_range"]
     columns = list(deaths_translation.keys())
     translated_columns = [deaths_translation[col] for col in columns]
     years = sorted(selected_df['year'].unique())
@@ -169,6 +171,7 @@ elif dataset == "deaths_merged.csv":
     dataset_name = "deaths_merged.csv"
 elif dataset == "report.csv":
     selected_df = report_df
+    x_options = ["date"]
     columns = list(report_translation.keys())
     translated_columns = [report_translation[col] for col in columns]
     min_date = report_df['date'].min().date()
@@ -176,6 +179,7 @@ elif dataset == "report.csv":
     dataset_name = "report.csv"
 else:
     selected_df = cases_df
+    x_options = ["date", "age_range", "province"]
     columns = list(cases_translation.keys())
     translated_columns = [cases_translation[col] for col in columns]
     # Year filter for cases_merged.csv
@@ -206,8 +210,16 @@ else:
 # Display the selected dataset name in the sidebar
 st.sidebar.write(f"ชุดข้อมูลที่เลือก: {dataset_name}")
 
+if len(selected_provinces) > 1:
+        display_mode = st.sidebar.radio(
+            "โหมดการแสดงผลข้อมูลจังหวัด",
+            ("รวมข้อมูลและแสดงเป็นกราฟเดียว", "แสดงเป็นกราฟแยกตามจังหวัด")
+        )
+
 # Allow the user to select the attributes to plot
 selected_attributes = st.sidebar.multiselect("เลือก Attribute", translated_columns)
+
+y_attributes = st.sidebar.multiselect("เลือกตัวแปรสำหรับแกน x", options=x_options)
 
 # Map selected translated attributes back to original names
 attribute_mapping = {v: k for k, v in owid_translation.items()}
@@ -258,7 +270,7 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
     if graph_type == "กราฟเส้น" and 'date' in selected_df.columns:
         fig = px.line(
             selected_df, 
-            x='date', 
+            x="date", 
             y=selected_attributes, 
             title=f'กราฟเส้นของ {", ".join(translated_attributes)}',
             labels=labels
@@ -267,7 +279,7 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
     elif graph_type == "กราฟแท่ง":
         fig = px.bar(
             selected_df, 
-            x='date' if 'date' in selected_df.columns else 'year', 
+            x=y_attributes[0], 
             y=selected_attributes, 
             title=f'กราฟแท่งของ {", ".join(translated_attributes)}',
             labels=labels
@@ -276,13 +288,13 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
     elif graph_type == "กราฟการกระจายตัว":
         fig = px.scatter(
             selected_df, 
-            x='date' if 'date' in selected_df.columns else 'year', 
+            x=y_attributes[0], 
             y=selected_attributes, 
             title=f'กราฟกระจายของ {", ".join(translated_attributes)}',
             labels=labels
         )
         st.plotly_chart(fig)
-    elif graph_type == "กราฟวงกลม" and len(selected_attributes) == 1:
+    elif graph_type == "กราฟวงกลม":
         attribute = selected_attributes[0]
         translated_attribute = attribute_mapping.get(attribute, attribute)
         for province in selected_provinces:
