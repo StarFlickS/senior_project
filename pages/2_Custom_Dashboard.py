@@ -179,7 +179,7 @@ elif dataset == "report.csv":
     dataset_name = "report.csv"
 else:
     selected_df = cases_df
-    x_options = ["date", "age_range", "province"]
+    x_options = ["age_range", "province"]
     columns = list(cases_translation.keys())
     translated_columns = [cases_translation[col] for col in columns]
     # Year filter for cases_merged.csv
@@ -270,7 +270,7 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
     if graph_type == "กราฟเส้น" and 'date' in selected_df.columns:
         fig = px.line(
             selected_df, 
-            x="date", 
+            x=y_attributes, 
             y=selected_attributes, 
             title=f'กราฟเส้นของ {", ".join(translated_attributes)}',
             labels=labels
