@@ -210,16 +210,16 @@ else:
 # Display the selected dataset name in the sidebar
 st.sidebar.write(f"ชุดข้อมูลที่เลือก: {dataset_name}")
 
-if len(selected_provinces) > 1:
-        display_mode = st.sidebar.radio(
-            "โหมดการแสดงผลข้อมูลจังหวัด",
-            ("รวมข้อมูลและแสดงเป็นกราฟเดียว", "แสดงเป็นกราฟแยกตามจังหวัด")
-        )
+# if len(selected_provinces) > 1:
+#         display_mode = st.sidebar.radio(
+#             "โหมดการแสดงผลข้อมูลจังหวัด",
+#             ("รวมข้อมูลและแสดงเป็นกราฟเดียว", "แสดงเป็นกราฟแยกตามจังหวัด")
+#         )
 
 # Allow the user to select the attributes to plot
 selected_attributes = st.sidebar.multiselect("เลือก Attribute", translated_columns)
 
-y_attributes = st.sidebar.multiselect("เลือกตัวแปรสำหรับแกน x", options=x_options)
+y_attributes = st.sidebar.selectbox("เลือกตัวแปรสำหรับแกน x", options=x_options)
 
 # Map selected translated attributes back to original names
 attribute_mapping = {v: k for k, v in owid_translation.items()}
@@ -279,7 +279,7 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
     elif graph_type == "กราฟแท่ง":
         fig = px.bar(
             selected_df, 
-            x=y_attributes[0], 
+            x=y_attributes, 
             y=selected_attributes, 
             title=f'กราฟแท่งของ {", ".join(translated_attributes)}',
             labels=labels
@@ -288,7 +288,7 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
     elif graph_type == "กราฟการกระจายตัว":
         fig = px.scatter(
             selected_df, 
-            x=y_attributes[0], 
+            x=y_attributes, 
             y=selected_attributes, 
             title=f'กราฟกระจายของ {", ".join(translated_attributes)}',
             labels=labels

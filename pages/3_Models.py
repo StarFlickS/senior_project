@@ -32,7 +32,7 @@ df = load_data()
 
 # Sidebar - Model selection
 st.sidebar.header("การเลือกโมเดล")
-target = st.sidebar.selectbox("เลือกเป้าหมายที่จะทำนาย", ("new_case", "new_death"))
+target = st.sidebar.selectbox("เลือกเป้าหมายที่จะทำนาย", ("new_death", "new_recovered"))
 model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วย Random Forest"))
 
 # Sidebar - Train/test split
