@@ -22,7 +22,7 @@ def load_data():
     report_df['date'] = report_df.apply(lambda row: pd.to_datetime(f"{row['year']}-{row['weeknum']}-1", format="%Y-%W-%w"), axis=1)
 
     cases_df = pd.read_csv("Datasets/Main_Dashboard/Modified/DDC/cases/cases_merged.csv")
-    # cases_df['date'] = cases_df.apply(lambda row: pd.to_datetime(f"{row['year']}-{row['weeknum']}-1", format="%Y-%W-%w"), axis=1)
+    cases_df['date'] = cases_df.apply(lambda row: pd.to_datetime(f"{row['year']}-{row['weeknum']}-1", format="%Y-%W-%w"), axis=1)
 
     return owid_df, death_df, report_df, cases_df
 
@@ -182,7 +182,7 @@ elif dataset == "report.csv":
     dataset_name = "report.csv"
 else:
     selected_df = cases_df
-    x_options = ["age_range", "province"]
+    x_options = ["date","age_range", "province"]
     columns = list(cases_translation.keys())
     translated_columns = [cases_translation[col] for col in columns]
     # Year filter for cases_merged.csv
@@ -206,8 +206,8 @@ else:
         (selected_df['province'].isin(selected_provinces)) &
         (selected_df['age_range'].isin(selected_age_range))
     ]
-    # min_date = cases_df['date'].min().date()
-    # max_date = cases_df['date'].max().date()
+    min_date = cases_df['date'].min().date()
+    max_date = cases_df['date'].max().date()
     dataset_name = "cases_merged.csv"
 
 # Display the selected dataset name in the sidebar
@@ -260,6 +260,7 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
         "date": "ปีที่ระบาด",
         "value": "จำนวน" # X-axis label for date
     }
+
     # Add translated labels for each selected attribute on the Y-axis
     if dataset_name == "owid_Thailand.csv":
         labels["value"] = labels["value"] + owid_translation[selected_attributes[0]].split(" ")[1].strip("()")
@@ -269,44 +270,67 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
         labels["value"] = labels["value"] + cases_translation[selected_attributes[0]].split(" ")[1].strip("()")
     elif dataset_name == "report.csv":
         labels["value"] = labels["value"] + report_translation[selected_attributes[0]].split(" ")[1].strip("()")
-
-    if graph_type == "กราฟเส้น" and 'date' in selected_df.columns:
-        fig = px.line(
-            selected_df, 
-            x=y_attributes, 
-            y=selected_attributes, 
-            title="กราฟเส้นแสดง" + " " + labels["value"] + " ตั้งแต่วันที่ ",
-            labels=labels
-        )
-        st.plotly_chart(fig)
-    elif graph_type == "กราฟแท่ง":
-        fig = px.bar(
-            selected_df, 
-            x=y_attributes, 
-            y=selected_attributes, 
-            title=f'กราฟแท่งของ {", ".join(translated_attributes)}',
-            labels=labels
-        )
-        st.plotly_chart(fig)
-    elif graph_type == "กราฟการกระจายตัว":
-        fig = px.scatter(
-            selected_df, 
-            x=y_attributes, 
-            y=selected_attributes, 
-            title=f'กราฟกระจายของ {", ".join(translated_attributes)}',
-            labels=labels
-        )
-        st.plotly_chart(fig)
-    elif graph_type == "กราฟวงกลม":
-        attribute = selected_attributes[0]
-        translated_attribute = attribute_mapping.get(attribute, attribute)
+    
+    if selected_provinces:  # If provinces are selected, create separate graphs for each province
         for province in selected_provinces:
-            province_data = selected_df[selected_df['province'] == province]
-            fig = px.pie(
-                province_data, 
-                names=attribute, 
-                title=f'กราฟวงกลมของ {translated_attribute} สำหรับจังหวัด {province}'
-            )
-            st.plotly_chart(fig)
+            for idx, attribute in enumerate(selected_attributes):
+                province_data = selected_df[selected_df['province'] == province]
+                if graph_type == "กราฟเส้น" and 'date' in province_data.columns:
+                    fig = px.line(
+                        province_data, x='date', y=attribute, 
+                        title=f'กราฟเส้นแสดง {attribute} สำหรับจังหวัด {province}',
+                        labels=labels
+                    )
+                    st.plotly_chart(fig, key=f"line-{province}-{attribute}-{idx}")
+                elif graph_type == "กราฟแท่ง":
+                    fig = px.bar(
+                        province_data, x='date', y=attribute, 
+                        title=f'กราฟแท่งของ {attribute} สำหรับจังหวัด {province}',
+                        labels=labels
+                    )
+                    st.plotly_chart(fig, key=f"bar-{province}-{attribute}-{idx}")
+                elif graph_type == "กราฟการกระจายตัว":
+                    fig = px.scatter(
+                        province_data, x='date', y=attribute, 
+                        title=f'กราฟกระจายของ {attribute} สำหรับจังหวัด {province}',
+                        labels=labels
+                    )
+                    st.plotly_chart(fig, key=f"scatter-{province}-{attribute}-{idx}")
+                elif graph_type == "กราฟวงกลม":
+                    fig = px.pie(
+                        province_data, names=attribute, 
+                        title=f'กราฟวงกลมของ {attribute} สำหรับจังหวัด {province}'
+                    )
+                    st.plotly_chart(fig, key=f"pie-{province}-{attribute}-{idx}")
+    else:  # If no province is selected, create general graphs for all data
+        for idx, attribute in enumerate(selected_attributes):
+            if graph_type == "กราฟเส้น":
+                fig = px.line(
+                    selected_df, x='date', y=attribute, 
+                    title=f'กราฟเส้นแสดง {attribute} ตั้งแต่วันที่',
+                    labels=labels
+                )
+                st.plotly_chart(fig, key=f"line-all-{attribute}-{idx}")
+            elif graph_type == "กราฟแท่ง":
+                fig = px.bar(
+                    selected_df, x='date', y=attribute,
+                    title=f'กราฟแท่งของ {attribute} ตั้งแต่วันที่',
+                    labels=labels
+                )
+                st.plotly_chart(fig, key=f"bar-all-{attribute}-{idx}")
+            elif graph_type == "กราฟการกระจายตัว":
+                fig = px.scatter(
+                    selected_df, x='date', y=attribute,
+                    title=f'กราฟกระจายของ {attribute} ตั้งแต่วันที่',
+                    labels=labels
+                )
+                st.plotly_chart(fig, key=f"scatter-all-{attribute}-{idx}")
+            elif graph_type == "กราฟวงกลม":
+                fig = px.pie(
+                    selected_df, names=attribute,
+                    title=f'กราฟวงกลมของ {attribute}'
+                )
+                st.plotly_chart(fig, key=f"pie-all-{attribute}-{idx}")
+
 else:
     st.write("กรุณาเลือก Attribute ที่จะนำมาแสดงข้อมูล")
