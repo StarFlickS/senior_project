@@ -86,6 +86,9 @@ dataset = st.sidebar.selectbox("เลือกชุดข้อมูล", ("o
 # Initialize selected_provinces as an empty list to avoid NameError
 selected_provinces = []
 
+if st.sidebar.button(f"Show details about {dataset}"):
+    st.sidebar.markdown("diddys")
+
 # Define translations for each dataset
 owid_translation = {
     "new_cases": "new_cases (ผู้ป่วยรายใหม่)",
@@ -254,25 +257,25 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
 
     # Define labels for X and Y axes in Thai
     labels = {
-        "date": "วันที่",  # X-axis label for date
+        "date": "ปีที่ระบาด",
+        "value": "จำนวน" # X-axis label for date
     }
     # Add translated labels for each selected attribute on the Y-axis
-    for attr in selected_attributes:
-        if attr in owid_translation:
-            labels[attr] = owid_translation[attr].split(" ")[1].strip("()")  # Extract translation
-        elif attr in deaths_translation:
-            labels[attr] = deaths_translation[attr].split(" ")[1].strip("()")
-        elif attr in report_translation:
-            labels[attr] = report_translation[attr].split(" ")[1].strip("()")
-        elif attr in cases_translation:
-            labels[attr] = cases_translation[attr].split(" ")[1].strip("()")
+    if dataset_name == "owid_Thailand.csv":
+        labels["value"] = labels["value"] + owid_translation[selected_attributes[0]].split(" ")[1].strip("()")
+    elif dataset_name == "deaths_merged.csv":
+        labels["value"] = labels["value"] + deaths_translation[selected_attributes[0]].split(" ")[1].strip("()")
+    elif dataset_name == "cases_merged.csv":
+        labels["value"] = labels["value"] + cases_translation[selected_attributes[0]].split(" ")[1].strip("()")
+    elif dataset_name == "report.csv":
+        labels["value"] = labels["value"] + report_translation[selected_attributes[0]].split(" ")[1].strip("()")
 
     if graph_type == "กราฟเส้น" and 'date' in selected_df.columns:
         fig = px.line(
             selected_df, 
             x=y_attributes, 
             y=selected_attributes, 
-            title=f'กราฟเส้นของ {", ".join(translated_attributes)}',
+            title="กราฟเส้นแสดง" + " " + labels["value"] + " ตั้งแต่วันที่ ",
             labels=labels
         )
         st.plotly_chart(fig)
