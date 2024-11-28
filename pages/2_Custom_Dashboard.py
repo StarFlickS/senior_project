@@ -146,7 +146,7 @@ if dataset == "owid_Thailand.csv":
     dataset_name = "owid_Thailand.csv"
 elif dataset == "deaths_merged.csv":
     selected_df = death_df
-    x_options = ["date", "age_range"]
+    x_options = ["date", "age_range", "province"]
     columns = list(deaths_translation.keys())
     translated_columns = [deaths_translation[col] for col in columns]
     years = sorted(selected_df['year'].unique())
@@ -182,7 +182,7 @@ elif dataset == "report.csv":
     dataset_name = "report.csv"
 else:
     selected_df = cases_df
-    x_options = ["date","age_range", "province"]
+    x_options = ["date", "age_range", "province"]
     columns = list(cases_translation.keys())
     translated_columns = [cases_translation[col] for col in columns]
     # Year filter for cases_merged.csv
