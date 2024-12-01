@@ -3,6 +3,11 @@ import pandas as pd
 import plotly.express as px
 from Codes.Other import regions
 
+st.set_page_config(
+    page_title="Dashboard Covid-19 in Thailand",
+    layout="wide",
+    initial_sidebar_state="expanded")
+
 def read_file(path):
     return pd.read_csv(path)
 
@@ -27,10 +32,14 @@ cases_df = read_file("Datasets/Main_Dashboard/Modified/DDC/cases/cases_merged.cs
 cases_age_range_count = cases_df['age_range'].value_counts().reset_index()
 cases_age_range_count.columns = ['age_range', 'count']
 
-st.set_page_config(
-    page_title="Dashboard Covid-19 in Thailand",
-    layout="wide",
-    initial_sidebar_state="expanded")
+# เชื่อม CSS ผ่าน st.markdown
+st.markdown(
+    """
+    <link href="style.css" rel="stylesheet" type="text/css">
+    """, 
+    unsafe_allow_html=True
+)
+
 
 col1_row1, col2_row1, col3_row1 = st.columns(3)
 col1_row2, col2_row2, col3_row2 = st.columns(3)
@@ -41,7 +50,8 @@ with col1_row1:
     container.metric("จำนวนผู้ติดเชื้อ", f"{total_cases:,} ราย")
     
     fig = px.line(owid_df_weekly, x='date', y='new_cases', title='จำนวนผู้ติดเชื้อในแต่ละปี')
-    
+    fig.update_traces(line=dict(color='red'))  # เปลี่ยนสีเป็นสีแดง
+
     fig.update_xaxes(
         dtick="M12",
         tickformat="%Y",
@@ -57,6 +67,7 @@ with col1_row1:
 
 with col2_row1:
     container = st.container(border=True)
+    
     def get_region(province):
         if province in north_region:
             return 'ภาคเหนือ'
@@ -85,13 +96,8 @@ with col2_row1:
     deaths_by_region.columns = ['Region', 'Number of Deaths']
 
     fig_pie = px.pie(deaths_by_region, names='Region', values='Number of Deaths', title='สัดส่วนจำนวนผู้เสียชีวิตในแต่ละภูมิภาค')
+    fig_pie.update_traces(marker=dict(colors=['#000000', '#808080', '#FF6347', '#1E90FF', '#3CB371', '#FFDE21']))  # เปลี่ยนสีในกราฟพาย
 
-    fig_pie.update_layout(
-        legend_title_text='ภาค',
-        xaxis_title='จำนวนผู้เสียชีวิต',
-        yaxis_title='จำนวนผู้เสียชีวิต'
-    )
-    
     container.subheader("จำนวนผู้เสียชีวิตในประเทศไทย")
     container.metric("จำนวนผู้เสียชีวิต", f"{total_deaths:,} ราย")
     container.plotly_chart(fig_pie)
@@ -103,6 +109,7 @@ with col3_row1:
     container.metric("จำนวนผู้ที่หายป่วย", f"{total_recovered:,} ราย")  
 
     fig = px.line(report_df, x='date', y='new_recovered', title='จำนวนผู้ป่วยที่รักษาหายในแต่ละปี')
+    fig.update_traces(line=dict(color='green'))  # เปลี่ยนสีเป็นสีเขียว
 
     fig.update_xaxes(
         dtick="M12",
@@ -124,6 +131,7 @@ with col1_row2:
     fig = px.bar(death_age_range_count, x='age_range', y='count',
                  title='การกระจายอายุของผู้เสียชีวิต',
                  labels={'age_range': 'ช่วงอายุ', 'death_count': 'จำนวนผู้เสียชีวิต'})
+    fig.update_traces(marker=dict(color='purple'))  # เปลี่ยนสีเป็นสีม่วง
 
     container.plotly_chart(fig)
     container.write("ข้อมูลจาก กรมควบคุมโรค (https://covid19.ddc.moph.go.th)")
@@ -135,6 +143,7 @@ with col2_row2:
     fig = px.bar(cases_age_range_count, x='age_range', y='count',
                  title='การกระจายอายุของผู้ติดเชื้อ',
                  labels={'age_range': 'ช่วงอายุ', 'count': 'จำนวนผู้ติดเชื้อ'})
+    fig.update_traces(marker=dict(color='blue'))  # เปลี่ยนสีเป็นสีฟ้า
 
     container.plotly_chart(fig)
     container.write("ข้อมูลจาก กรมควบคุมโรค (https://covid19.ddc.moph.go.th)")
@@ -145,6 +154,7 @@ with col3_row2:
     container.metric("จำนวนผู้ที่ฉีดวัคซีน", f"{total_vac:,} ราย")  
 
     fig = px.line(owid_df_weekly, x='date', y='new_vaccinations', title='จำนวนผู้ติดเชื้อในแต่ละปี')
+    fig.update_traces(line=dict(color='yellow'))  # เปลี่ยนสีเป็นสีเหลือง
 
     container.plotly_chart(fig)
 

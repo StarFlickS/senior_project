@@ -33,12 +33,14 @@ df = load_data()
 # Sidebar - Model selection
 st.sidebar.header("การเลือกโมเดล")
 target = st.sidebar.selectbox("เลือกเป้าหมายที่จะทำนาย", ("new_death", "new_recovered"))
-model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วย Random Forest"))
+model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วย Random Forest","การถดถอยเชิงเส้นแบบคูณ (Multiplication Linear Regression)"))
+
 
 # Sidebar - Train/test split
 test_size = st.sidebar.slider("เลือกขนาดชุดข้อมูลทดสอบ (%)", 10, 50, 20)
 
 # Prepare data for modeling
+print(df)
 X = df.drop(columns=[target, 'date'])  # Exclude the 'date' column for modeling
 y = df[target]
 
@@ -50,9 +52,24 @@ if model_choice == "การถดถอยเชิงเส้น (Linear Reg
     model = LinearRegression()
 elif model_choice == "การคาดการณ์ด้วย Random Forest":
     model = RandomForestRegressor(n_estimators=100, random_state=42)
+elif model_choice == "การถดถอยเชิงเส้นแบบคูณ (Multiplication Linear Regression)": 
+    def multiplication_linear_regression(X,y) : 
+        weights = np.linalg.pinv(X.T @ X) @ X.T @ y
+        return weights 
+    
+    # Train the model
+    X_train_bias = np.hstack((np.ones((X_train.shape[0], 1)), X_train))  
+    weights = multiplication_linear_regression(X_train_bias, y_train)
+    
+    def predict_multiplication(X,weights) : 
+        X = np.hstack((np.ones((X.shape[0], 1)), X))
+        return np.dot(X,weights)
+    
+    predictions = predict_multiplication(X_test, weights)
 
-model.fit(X_train, y_train)
-predictions = model.predict(X_test)
+if model_choice != "การถดถอยเชิงเส้นแบบคูณ (Multiplication Linear Regression)":
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
 
 # Evaluation
 mae = mean_absolute_error(y_test, predictions)

@@ -28,66 +28,12 @@ def load_data():
 
 owid_df, death_df, report_df, cases_df = load_data()
 
-# Add dataset descriptions section
-st.sidebar.title("ข้อมูลเกี่ยวกับ Dataset")
-st.sidebar.markdown("""
-### owid_Thailand.csv
-ชุดข้อมูลที่รวบรวมข้อมูลเกี่ยวกับ COVID-19 ในประเทศไทย โดยมีตัวชี้วัดเช่น:
-- **new_cases**: จำนวนผู้ป่วยรายใหม่
-- **new_deaths**: จำนวนผู้เสียชีวิตรายใหม่
-- **new_vaccinations**: จำนวนการฉีดวัคซีนใหม่
-- **total_cases**: จำนวนผู้ป่วยสะสม
-- **total_deaths**: จำนวนผู้เสียชีวิตสะสม
-- **total_vaccinations**: จำนวนการฉีดวัคซีนทั้งหมด
-
-สามารถนำมาใช้เพื่อวิเคราะห์แนวโน้มการแพร่ระบาด เช่น การเปรียบเทียบจำนวนผู้ป่วยรายใหม่และการฉีดวัคซีนในแต่ละวัน
-
----
-
-### deaths_merged.csv
-ชุดข้อมูลเกี่ยวกับผู้เสียชีวิตจาก COVID-19 ในประเทศไทย โดยมีข้อมูลเช่น:
-- **age** และ **age_range**: อายุและช่วงอายุของผู้เสียชีวิต
-- **type**: ประเภทของการเสียชีวิต
-- **occupation**: อาชีพของผู้เสียชีวิต
-- **death_cluster**: กลุ่มที่เกี่ยวข้องกับการเสียชีวิต
-- **province**: จังหวัดที่ผู้เสียชีวิตอาศัยอยู่
-
-สามารถใช้เพื่อวิเคราะห์ลักษณะทางประชากรศาสตร์ของผู้เสียชีวิต เช่น ช่วงอายุที่มีความเสี่ยงสูง และการเปรียบเทียบข้อมูลระหว่างจังหวัดต่าง ๆ
-
----
-
-### report.csv
-ข้อมูลรายงานสถานการณ์ COVID-19 ในประเทศไทย โดยมีตัวชี้วัด เช่น:
-- **new_case** และ **total_case**: จำนวนผู้ป่วยรายใหม่และสะสม
-- **new_recovered** และ **total_recovered**: จำนวนผู้ป่วยหายใหม่และสะสม
-- **new_death** และ **total_death**: จำนวนผู้เสียชีวิตใหม่และสะสม
-- **case_foreign**, **case_prison**, และ **case_walkin**: ผู้ป่วยจากต่างชาติ ในเรือนจำ และ walk-in
-
-เหมาะสำหรับการติดตามสถานการณ์รายสัปดาห์หรือรายวัน และวิเคราะห์แหล่งที่มาของผู้ป่วย
-
----
-
-### cases_merged.csv
-ชุดข้อมูลเกี่ยวกับลักษณะของผู้ป่วยที่รายงานในประเทศไทย มีข้อมูลเช่น:
-- **gender**: เพศของผู้ป่วย
-- **age_number** และ **age_range**: อายุและช่วงอายุของผู้ป่วย
-- **job**: อาชีพของผู้ป่วย
-- **risk**: ปัจจัยเสี่ยงที่เกี่ยวข้อง
-- **province** และ **region**: จังหวัดและภูมิภาคของผู้ป่วย
-
-สามารถใช้เพื่อวิเคราะห์ลักษณะทางประชากรศาสตร์ของผู้ป่วย เช่น ความเสี่ยงในแต่ละกลุ่มอายุหรือภูมิภาคที่มีการแพร่ระบาดสูง
-""")
-
-
 # Sidebar for user selections
 st.sidebar.title("ปรับแต่งแดชบอร์ด")
 dataset = st.sidebar.selectbox("เลือกชุดข้อมูล", ("owid_Thailand.csv", "deaths_merged.csv", "report.csv", "cases_merged.csv"))
 
 # Initialize selected_provinces as an empty list to avoid NameError
 selected_provinces = []
-
-if st.sidebar.button(f"Show details about {dataset}"):
-    st.sidebar.markdown("diddys")
 
 # Define translations for each dataset
 owid_translation = {
@@ -211,7 +157,78 @@ else:
     dataset_name = "cases_merged.csv"
 
 # Display the selected dataset name in the sidebar
+if "show_popup" not in st.session_state:
+    st.session_state["show_popup"] = False
+
+# ฟังก์ชันเปิด Popup
+def open_popup(data_text):
+    st.session_state["show_popup"] = True
+
+# ฟังก์ชันปิด Popup
+def close_popup():
+    st.session_state["show_popup"] = False
+    st.session_state["popup_text"] = " "
+
+# Display the selected dataset name in the sidebar
 st.sidebar.write(f"ชุดข้อมูลที่เลือก: {dataset_name}")
+if dataset_name == "owid_Thailand.csv" : 
+    infodataset = """
+                    ### owid_Thailand.csv  
+                    ชุดข้อมูลที่รวบรวมข้อมูลเกี่ยวกับ COVID-19 ในประเทศไทย โดยมีตัวชี้วัดเช่น:
+                        - **new_cases**: จำนวนผู้ป่วยรายใหม่  
+                        - **new_deaths**: จำนวนผู้เสียชีวิตรายใหม่  
+                        - **new_vaccinations**: จำนวนการฉีดวัคซีนใหม่  
+                        - **total_cases**: จำนวนผู้ป่วยสะสม  
+                        - **total_deaths**: จำนวนผู้เสียชีวิตสะสม  
+                        - **total_vaccinations**: จำนวนการฉีดวัคซีนทั้งหมด  
+                    สามารถนำมาใช้เพื่อวิเคราะห์แนวโน้มการแพร่ระบาด เช่น การเปรียบเทียบจำนวนผู้ป่วยรายใหม่และการฉีดวัคซีนในแต่ละวัน  
+                    """ 
+elif dataset_name == "deaths_merged.csv": 
+    infodataset = """
+                    ### deaths_merged.csv
+                    ชุดข้อมูลเกี่ยวกับผู้เสียชีวิตจาก COVID-19 ในประเทศไทย โดยมีข้อมูลเช่น:
+                    - **age** และ **age_range**: อายุและช่วงอายุของผู้เสียชีวิต
+                    - **type**: ประเภทของการเสียชีวิต
+                    - **occupation**: อาชีพของผู้เสียชีวิต
+                    - **death_cluster**: กลุ่มที่เกี่ยวข้องกับการเสียชีวิต
+                    - **province**: จังหวัดที่ผู้เสียชีวิตอาศัยอยู่
+                    สามารถใช้เพื่อวิเคราะห์ลักษณะทางประชากรศาสตร์ของผู้เสียชีวิต เช่น ช่วงอายุที่มีความเสี่ยงสูง และการเปรียบเทียบข้อมูลระหว่างจังหวัดต่าง ๆ
+                    """
+elif dataset_name == "report.csv" : 
+    infodataset = """
+                    ### report.csv
+                    ข้อมูลรายงานสถานการณ์ COVID-19 ในประเทศไทย โดยมีตัวชี้วัด เช่น:
+                    - **new_case** และ **total_case**: จำนวนผู้ป่วยรายใหม่และสะสม
+                    - **new_recovered** และ **total_recovered**: จำนวนผู้ป่วยหายใหม่และสะสม
+                    - **new_death** และ **total_death**: จำนวนผู้เสียชีวิตใหม่และสะสม
+                    - **case_foreign**, **case_prison**, และ **case_walkin**: ผู้ป่วยจากต่างชาติ ในเรือนจำ และ walk-in
+                    เหมาะสำหรับการติดตามสถานการณ์รายสัปดาห์หรือรายวัน และวิเคราะห์แหล่งที่มาของผู้ป่วย
+                    """
+else : 
+    infodataset = """
+                   ### cases_merged.csv
+                   ชุดข้อมูลเกี่ยวกับลักษณะของผู้ป่วยที่รายงานในประเทศไทย มีข้อมูลเช่น:
+                   - **gender**: เพศของผู้ป่วย
+                   - **age_number** และ **age_range**: อายุและช่วงอายุของผู้ป่วย
+                   - **job**: อาชีพของผู้ป่วย
+                   - **risk**: ปัจจัยเสี่ยงที่เกี่ยวข้อง
+                   - **province** และ **region**: จังหวัดและภูมิภาคของผู้ป่วย
+                    สามารถใช้เพื่อวิเคราะห์ลักษณะทางประชากรศาสตร์ของผู้ป่วย เช่น ความเสี่ยงในแต่ละกลุ่มอายุหรือภูมิภาคที่มีการแพร่ระบาดสูง
+                    """
+
+if st.sidebar.button("ข้อมูลเกี่ยวกับ Dataset"): 
+    open_popup(infodataset)
+
+
+# แสดง Popup ในหน้าหลัก
+if st.session_state["show_popup"]:
+    with st.container():
+        st.warning("### ข้อมูลเกี่ยวกับ Dataset")
+        st.warning(infodataset)
+
+        # ปุ่มปิด
+        if st.button("ปิด"):
+            close_popup()
 
 # if len(selected_provinces) > 1:
 #         display_mode = st.sidebar.radio(
@@ -278,28 +295,28 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
                 if graph_type == "กราฟเส้น" and 'date' in province_data.columns:
                     fig = px.line(
                         province_data, x='date', y=attribute, 
-                        title=f'กราฟเส้นแสดง {attribute} สำหรับจังหวัด {province}',
+                        title=f'กราฟเส้นแสดง {labels["value"]} สำหรับจังหวัด {province}',
                         labels=labels
                     )
                     st.plotly_chart(fig, key=f"line-{province}-{attribute}-{idx}")
                 elif graph_type == "กราฟแท่ง":
                     fig = px.bar(
                         province_data, x='date', y=attribute, 
-                        title=f'กราฟแท่งของ {attribute} สำหรับจังหวัด {province}',
+                        title=f'กราฟแท่งของ {labels["value"]} สำหรับจังหวัด {province}',
                         labels=labels
                     )
                     st.plotly_chart(fig, key=f"bar-{province}-{attribute}-{idx}")
                 elif graph_type == "กราฟการกระจายตัว":
                     fig = px.scatter(
                         province_data, x='date', y=attribute, 
-                        title=f'กราฟกระจายของ {attribute} สำหรับจังหวัด {province}',
+                        title=f'กราฟกระจายของ {labels["value"]} สำหรับจังหวัด {province}',
                         labels=labels
                     )
                     st.plotly_chart(fig, key=f"scatter-{province}-{attribute}-{idx}")
                 elif graph_type == "กราฟวงกลม":
                     fig = px.pie(
                         province_data, names=attribute, 
-                        title=f'กราฟวงกลมของ {attribute} สำหรับจังหวัด {province}'
+                        title=f'กราฟวงกลมของ {labels["value"]} สำหรับจังหวัด {province}'
                     )
                     st.plotly_chart(fig, key=f"pie-{province}-{attribute}-{idx}")
     else:  # If no province is selected, create general graphs for all data
@@ -307,28 +324,28 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
             if graph_type == "กราฟเส้น":
                 fig = px.line(
                     selected_df, x='date', y=attribute, 
-                    title=f'กราฟเส้นแสดง {attribute} ตั้งแต่วันที่',
+                    title=f'กราฟเส้นแสดง {labels["value"]} ตั้งแต่วันที่',
                     labels=labels
                 )
                 st.plotly_chart(fig, key=f"line-all-{attribute}-{idx}")
             elif graph_type == "กราฟแท่ง":
                 fig = px.bar(
                     selected_df, x='date', y=attribute,
-                    title=f'กราฟแท่งของ {attribute} ตั้งแต่วันที่',
+                    title=f'กราฟแท่งของ {labels["value"]} ตั้งแต่วันที่',
                     labels=labels
                 )
                 st.plotly_chart(fig, key=f"bar-all-{attribute}-{idx}")
             elif graph_type == "กราฟการกระจายตัว":
                 fig = px.scatter(
                     selected_df, x='date', y=attribute,
-                    title=f'กราฟกระจายของ {attribute} ตั้งแต่วันที่',
+                    title=f'กราฟกระจายของ {labels["value"]} ตั้งแต่วันที่',
                     labels=labels
                 )
                 st.plotly_chart(fig, key=f"scatter-all-{attribute}-{idx}")
             elif graph_type == "กราฟวงกลม":
                 fig = px.pie(
                     selected_df, names=attribute,
-                    title=f'กราฟวงกลมของ {attribute}'
+                    title=f'กราฟวงกลมของ {labels["value"]}'
                 )
                 st.plotly_chart(fig, key=f"pie-all-{attribute}-{idx}")
 
