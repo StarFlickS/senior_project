@@ -44,6 +44,7 @@ st.markdown(
 col1_row1, col2_row1, col3_row1 = st.columns(3)
 col1_row2, col2_row2, col3_row2 = st.columns(3)
 
+st.title("สถานการณ์โควิด-19 ในประเทศ ตั้งแต่ปี 2020 ถึงปี 2022")
 with col1_row1:
     container = st.container(border=True)
     container.subheader("จำนวนผู้ติดเชื้อทั้งหมดในประเทศไทย")
@@ -159,3 +160,4 @@ with col3_row2:
     container.plotly_chart(fig)
 
     container.write("ข้อมูลจาก owid (https://ourworldindata.org)")
+ฃ

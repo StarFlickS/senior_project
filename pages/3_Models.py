@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("แดชบอร์ดการคาดการณ์ข้อมูล")
+st.title("โมเดลการคาดการณ์ข้อมูล")
 
 # Function to load and preprocess data
 @st.cache_data

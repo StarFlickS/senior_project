@@ -29,7 +29,7 @@ def load_data():
 owid_df, death_df, report_df, cases_df = load_data()
 
 # Sidebar for user selections
-st.sidebar.title("ปรับแต่งแดชบอร์ด")
+st.sidebar.title("ปรับแต่ง Dashboard")
 dataset = st.sidebar.selectbox("เลือกชุดข้อมูล", ("owid_Thailand.csv", "deaths_merged.csv", "report.csv", "cases_merged.csv"))
 
 # Initialize selected_provinces as an empty list to avoid NameError
@@ -170,7 +170,6 @@ def close_popup():
     st.session_state["popup_text"] = " "
 
 # Display the selected dataset name in the sidebar
-st.sidebar.write(f"ชุดข้อมูลที่เลือก: {dataset_name}")
 if dataset_name == "owid_Thailand.csv" : 
     infodataset = """
                     ### owid_Thailand.csv  
