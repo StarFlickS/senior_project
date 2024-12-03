@@ -11,6 +11,8 @@ st.set_page_config(
 def read_file(path):
     return pd.read_csv(path)
 
+st.title("สถานการณ์โควิด-19 ในประเทศ ตั้งแต่ปี 2020 ถึงปี 2024")
+
 owid_df = read_file("Datasets/Main_Dashboard/Modified/owid/owid_Thailand.csv")
 owid_df['date'] = pd.to_datetime(owid_df['date'])
 total_cases = owid_df['total_cases'].max()
@@ -44,7 +46,6 @@ st.markdown(
 col1_row1, col2_row1, col3_row1 = st.columns(3)
 col1_row2, col2_row2, col3_row2 = st.columns(3)
 
-st.title("สถานการณ์โควิด-19 ในประเทศ ตั้งแต่ปี 2020 ถึงปี 2022")
 with col1_row1:
     container = st.container(border=True)
     container.subheader("จำนวนผู้ติดเชื้อทั้งหมดในประเทศไทย")
