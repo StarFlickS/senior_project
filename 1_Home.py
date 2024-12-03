@@ -160,4 +160,3 @@ with col3_row2:
     container.plotly_chart(fig)
 
     container.write("ข้อมูลจาก owid (https://ourworldindata.org)")
-ฃ
