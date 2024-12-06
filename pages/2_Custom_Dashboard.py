@@ -293,21 +293,21 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
                 province_data = selected_df[selected_df['province'] == province]
                 if graph_type == "กราฟเส้น" and 'date' in province_data.columns:
                     fig = px.line(
-                        province_data, x='date', y=attribute, 
+                        province_data, x=x_options, y=attribute, 
                         title=f'กราฟเส้นแสดง {labels["value"]} สำหรับจังหวัด {province}',
                         labels=labels
                     )
                     st.plotly_chart(fig, key=f"line-{province}-{attribute}-{idx}")
                 elif graph_type == "กราฟแท่ง":
                     fig = px.bar(
-                        province_data, x='date', y=attribute, 
-                        title=f'กราฟแท่งของ {labels["value"]} สำหรับจังหวัด {province}',
+                        province_data, x=x_options, y=attribute, 
+                        title=f'กราฟแท่งแสดง {labels["value"]} สำหรับจังหวัด {province}',
                         labels=labels
                     )
-                    st.plotly_chart(fig, key=f"bar-{province}-{attribute}-{idx}")
+                    st.plotly_chart(fig)
                 elif graph_type == "กราฟการกระจายตัว":
                     fig = px.scatter(
-                        province_data, x='date', y=attribute, 
+                        province_data, x=x_options, y=attribute, 
                         title=f'กราฟกระจายของ {labels["value"]} สำหรับจังหวัด {province}',
                         labels=labels
                     )
@@ -322,29 +322,29 @@ if not incompatible_chart and not selected_df.empty and len(selected_attributes)
         for idx, attribute in enumerate(selected_attributes):
             if graph_type == "กราฟเส้น":
                 fig = px.line(
-                    selected_df, x='date', y=attribute, 
-                    title=f'กราฟเส้นแสดง {labels["value"]} ตั้งแต่วันที่',
+                    selected_df, x=x_options, y=attribute, 
+                    title=f'กราฟเส้นแสดง {labels["value"]}',
                     labels=labels
                 )
                 st.plotly_chart(fig, key=f"line-all-{attribute}-{idx}")
             elif graph_type == "กราฟแท่ง":
                 fig = px.bar(
-                    selected_df, x='date', y=attribute,
-                    title=f'กราฟแท่งของ {labels["value"]} ตั้งแต่วันที่',
+                    selected_df, x=x_options, y=attribute,
+                    title=f'กราฟแท่งแสดง {labels["value"]}',
                     labels=labels
                 )
                 st.plotly_chart(fig, key=f"bar-all-{attribute}-{idx}")
             elif graph_type == "กราฟการกระจายตัว":
                 fig = px.scatter(
-                    selected_df, x='date', y=attribute,
-                    title=f'กราฟกระจายของ {labels["value"]} ตั้งแต่วันที่',
+                    selected_df, x=x_options, y=attribute,
+                    title=f'กราฟกระจายแสดง {labels["value"]}',
                     labels=labels
                 )
                 st.plotly_chart(fig, key=f"scatter-all-{attribute}-{idx}")
             elif graph_type == "กราฟวงกลม":
                 fig = px.pie(
                     selected_df, names=attribute,
-                    title=f'กราฟวงกลมของ {labels["value"]}'
+                    title=f'กราฟวงกลมแสดง {labels["value"]}'
                 )
                 st.plotly_chart(fig, key=f"pie-all-{attribute}-{idx}")
 
