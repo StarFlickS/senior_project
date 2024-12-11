@@ -153,7 +153,7 @@ with col2_row2:
 with col3_row2:
     container = st.container(border=True)
     container.subheader("จำนวนผู้ที่ได้รับวัคซีนในประเทศไทย")
-    container.metric("จำนวนผู้ที่ฉีดวัคซีน", f"{total_vac:,} ราย")  
+    container.metric("จำนวนผู้ที่ฉีดวัคซีน", f"{int(total_vac):,} ราย")  
 
     fig = px.line(owid_df_weekly, x='date', y='new_vaccinations', title='จำนวนผู้ติดเชื้อในแต่ละปี')
     fig.update_traces(line=dict(color='yellow'))  # เปลี่ยนสีเป็นสีเหลือง
