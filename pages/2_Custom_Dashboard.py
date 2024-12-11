@@ -29,9 +29,18 @@ def load_data():
 owid_df, death_df, report_df, cases_df = load_data()
 
 # Sidebar for user selections
-st.sidebar.title("ปรับแต่ง Dashboard")
-dataset = st.sidebar.selectbox("เลือกชุดข้อมูล", ("owid_Thailand.csv", "deaths_merged.csv", "report.csv", "cases_merged.csv"))
-
+st.sidebar.title("ปรับแต่งแดชบอร์ด")
+dataset_choices = [
+    ("owid_Thailand.csv", "ข้อมูลเกี่ยวกับ COVID-19"),
+    ("deaths_merged.csv", "ข้อมูลเกี่ยวกับผู้เสียชีวิต"),
+    ("report.csv", "ข้อมูลรายงานสถานการณ์ COVID-19"),
+    ("cases_merged.csv", "ลักษณะของผู้ป่วยที่รายงาน")
+]
+dataset = st.sidebar.selectbox(
+    "เลือกชุดข้อมูล",
+    options=dataset_choices,
+    format_func=lambda x: x[1]  # Use the friendly name for display
+)
 # Initialize selected_provinces as an empty list to avoid NameError
 selected_provinces = []
 

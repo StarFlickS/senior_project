@@ -33,11 +33,14 @@ df = load_data()
 # Sidebar - Model selection
 st.sidebar.header("การเลือกโมเดล")
 target = st.sidebar.selectbox("เลือกเป้าหมายที่จะทำนาย", ("new_death", "new_recovered"))
-model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วย Random Forest","การถดถอยเชิงเส้นแบบคูณ (Multiplication Linear Regression)"))
-
+model_choice = st.sidebar.selectbox("เลือกโมเดลสำหรับการคาดการณ์", ("การถดถอยเชิงเส้น (Linear Regression)", "การคาดการณ์ด้วย Random Forest"))
 
 # Sidebar - Train/test split
 test_size = st.sidebar.slider("เลือกขนาดชุดข้อมูลทดสอบ (%)", 10, 50, 20)
+train_size = 100 - test_size
+num_train_samples = int((train_size / 100) * len(df))
+
+st.sidebar.write(f"จำนวนข้อมูลที่ใช้ในการเทรน: {num_train_samples} จากทั้งหมด {len(df)} ข้อมูล")
 
 # Prepare data for modeling
 print(df)
