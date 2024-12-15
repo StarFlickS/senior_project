@@ -46,49 +46,50 @@ selected_provinces = []
 
 # Define translations for each dataset
 owid_translation = {
-    "new_cases": "new_cases (ผู้ป่วยรายใหม่)",
-    "new_deaths": "new_deaths (ผู้เสียชีวิตรายใหม่)",
-    "new_vaccinations": "new_vaccinations (การฉีดวัคซีนใหม่)",
-    "total_cases": "total_cases (ผู้ป่วยสะสมทั้งหมด)",
-    "total_deaths": "total_deaths (ผู้เสียชีวิตสะสมทั้งหมด)",
-    "total_vaccinations": "total_vaccinations (การฉีดวัคซีนทั้งหมด)"
+    "new_cases": "ผู้ป่วยรายใหม่ (new_cases)",
+    "new_deaths": "ผู้เสียชีวิตรายใหม่ (new_deaths)",
+    "new_vaccinations": "การฉีดวัคซีนใหม่ (new_vaccinations)",
+    "total_cases": "ผู้ป่วยสะสมทั้งหมด (total_cases)",
+    "total_deaths": "ผู้เสียชีวิตสะสมทั้งหมด (total_deaths)",
+    "total_vaccinations": "การฉีดวัคซีนทั้งหมด (total_vaccinations)"
 }
 
 deaths_translation = {
-    "age": "age (อายุ)",
-    "age_range": "age_range (ช่วงอายุ)",
-    "type": "type (ประเภท)",
-    "occupation": "occupation (อาชีพ)",
-    "death_cluster": "death_cluster (กลุ่มผู้เสียชีวิต)",
-    "province": "province (จังหวัด)"
+    "age": "อายุ (age)",
+    "age_range": "ช่วงอายุ (age_range)",
+    "type": "ประเภท (type)",
+    "occupation": "อาชีพ (occupation)",
+    "death_cluster": "กลุ่มผู้เสียชีวิต (death_cluster)",
+    "province": "จังหวัด (province)"
 }
 
 report_translation = {
-    "new_case": "new_case (ผู้ป่วยรายใหม่)",
-    "total_case": "total_case (ผู้ป่วยสะสม)",
-    "new_case_excludeabroad": "new_case_excludeabroad (ผู้ป่วยในประเทศ)",
-    "total_case_excludeabroad": "total_case_excludeabroad (ผู้ป่วยสะสมในประเทศ)",
-    "new_recovered": "new_recovered (ผู้ป่วยหายใหม่)",
-    "total_recovered": "total_recovered (ผู้ป่วยหายสะสม)",
-    "new_death": "new_death (ผู้เสียชีวิตใหม่)",
-    "total_death": "total_death (ผู้เสียชีวิตสะสม)",
-    "case_foreign": "case_foreign (ผู้ป่วยต่างชาติ)",
-    "case_prison": "case_prison (ผู้ป่วยในเรือนจำ)",
-    "case_walkin": "case_walkin (ผู้ป่วย walk-in)"
+    "new_case": "ผู้ป่วยรายใหม่ (new_case)",
+    "total_case": "ผู้ป่วยสะสม (total_case)",
+    "new_case_excludeabroad": "ผู้ป่วยในประเทศ (new_case_excludeabroad)",
+    "total_case_excludeabroad": "ผู้ป่วยสะสมในประเทศ (total_case_excludeabroad)",
+    "new_recovered": "ผู้ป่วยหายใหม่ (new_recovered)",
+    "total_recovered": "ผู้ป่วยหายสะสม (total_recovered)",
+    "new_death": "ผู้เสียชีวิตใหม่ (new_death)",
+    "total_death": "ผู้เสียชีวิตสะสม (total_death)",
+    "case_foreign": "ผู้ป่วยต่างชาติ (case_foreign)",
+    "case_prison": "ผู้ป่วยในเรือนจำ (case_prison)",
+    "case_walkin": "ผู้ป่วย walk-in (case_walkin)"
 }
 
 cases_translation = {
-    "gender": "gender (เพศ)",
-    "age_number": "age_number (อายุเป็นตัวเลข)",
-    "age_range": "age_range (ช่วงอายุ)",
-    "job": "job (อาชีพ)",
-    "risk": "risk (ความเสี่ยง)",
-    "patient_type": "patient_type (ประเภทผู้ป่วย)",
-    "province": "province (จังหวัด)",
-    "reporting_group": "reporting_group (กลุ่มการรายงาน)",
-    "region_odpc": "region_odpc (เขตสุขภาพ ODPC)",
-    "region": "region (ภูมิภาค)"
+    "gender": "เพศ (gender)",
+    "age_number": "อายุเป็นตัวเลข (age_number)",
+    "age_range": "ช่วงอายุ (age_range)",
+    "job": "อาชีพ (job)",
+    "risk": "ความเสี่ยง (risk)",
+    "patient_type": "ประเภทผู้ป่วย (patient_type)",
+    "province": "จังหวัด (province)",
+    "reporting_group": "กลุ่มการรายงาน (reporting_group)",
+    "region_odpc": "เขตสุขภาพ ODPC (region_odpc)",
+    "region": "ภูมิภาค (region)"
 }
+
 
 # Selecting attributes and updating the dataset name and columns
 if dataset == "owid_Thailand.csv":
