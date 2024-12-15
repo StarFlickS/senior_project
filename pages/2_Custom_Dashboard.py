@@ -40,7 +40,7 @@ dataset = st.sidebar.selectbox(
     "เลือกชุดข้อมูล",
     options=dataset_choices,
     format_func=lambda x: x[1]  # Use the friendly name for display
-)
+)[0]
 # Initialize selected_provinces as an empty list to avoid NameError
 selected_provinces = []
 
@@ -237,12 +237,6 @@ if st.session_state["show_popup"]:
         # ปุ่มปิด
         if st.button("ปิด"):
             close_popup()
-
-# if len(selected_provinces) > 1:
-#         display_mode = st.sidebar.radio(
-#             "โหมดการแสดงผลข้อมูลจังหวัด",
-#             ("รวมข้อมูลและแสดงเป็นกราฟเดียว", "แสดงเป็นกราฟแยกตามจังหวัด")
-#         )
 
 # Allow the user to select the attributes to plot
 selected_attributes = st.sidebar.multiselect("เลือก Attribute", translated_columns)
